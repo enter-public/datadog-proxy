@@ -77,7 +77,13 @@ func (h *Handler) proxyHandler(c *gin.Context) {
 	}
 	h.Logger.DebugContext(c, "returning status code and copying response body")
 	c.Status(resp.StatusCode)
-	io.Copy(c.Writer, resp.Body)
+	_, err = io.Copy(c.Writer, resp.Body)
+	if err != nil {
+		message := "failed to copy response body"
+		h.Logger.ErrorContext(c, message, "error", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": message, "details": err.Error()})
+		return
+	}
 }
 
 func (h *Handler) Run(ctx context.Context) error {

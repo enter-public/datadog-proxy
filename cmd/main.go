@@ -16,10 +16,6 @@ import (
 	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 )
 
-func tags(t []string) []string {
-	return append([]string{"env:production", "service:datadog-proxy"}, t...)
-}
-
 func getLogLevel() slog.Level {
 	levelStr := strings.ToUpper(os.Getenv("LOG_LEVEL"))
 	switch levelStr {
@@ -49,7 +45,7 @@ func main() {
 	}
 	logger.DebugContext(ctx, "config ready", "config", c)
 
-	if c.TracerEnabled == true {
+	if c.TracerEnabled {
 		tracer.Start(tracer.WithEnv(c.Environment), tracer.WithAgentTimeout(60), tracer.WithSendRetries(5), tracer.WithHTTPClient(&http.Client{
 			Timeout: 20 * time.Second, // default 10
 			// https://github.com/DataDog/dd-trace-go/blob/e45993802ac1e2c1f0de59e95e18e12de7343266/ddtrace/tracer/transport.go#L45-L52
@@ -77,7 +73,10 @@ func main() {
 		os.Exit(0)
 	}()
 
-	h.Run(ctx)
+	err = h.Run(ctx)
+	if err != nil {
+		logFatal(logger, "failed to run", "error", err)
+	}
 }
 
 func logFatal(l *slog.Logger, msg string, args ...any) {
