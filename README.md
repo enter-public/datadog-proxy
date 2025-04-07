@@ -12,7 +12,6 @@ go run cmd/main.go | jq
 
 ## Usage
 
-
 ```bash
 docker pull ghcr.io/enter-public/datadog-proxy:latest
 ```
