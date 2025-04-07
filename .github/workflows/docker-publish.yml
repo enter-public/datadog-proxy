@@ -1,5 +1,9 @@
 name: Build, Test, Lint & Publish
 
+permissions:
+  contents: write  # ✅ Required to push tags and create releases
+  packages: write
+
 on:
   push:
     branches: [ main ]
