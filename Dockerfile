@@ -1,5 +1,6 @@
 # syntax=docker/dockerfile:1
 FROM golang:1.23.5-alpine AS builder
+
 WORKDIR /src
 
 # Install git
