@@ -52,21 +52,3 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository_owner }}/datadog-proxy:latest
             ghcr.io/${{ github.repository_owner }}/datadog-proxy:${{ github.sha }}
-
-      - name: Create Git tag from commit
-        if: github.ref == 'refs/heads/main'
-        run: |
-          TAG="auto-${GITHUB_SHA::7}"
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git tag "$TAG"
-          git push origin "$TAG"
-
-      - name: Create GitHub Release
-        if: github.ref == 'refs/heads/main'
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: auto-${{ github.sha }}
-          name: "Release for commit ${{ github.sha }}"
-          body: |
-            This release was automatically created for commit `${{ github.sha }}`.
