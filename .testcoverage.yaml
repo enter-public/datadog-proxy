@@ -1,0 +1,6 @@
+threshold:
+  total: 60
+
+exclude:
+  paths:
+    - ^cmd/main.go$
