@@ -1,0 +1,77 @@
+# golangci-lint configuration file
+# Official documentation: https://golangci-lint.run/
+
+run:
+  timeout: 5m # Sets the maximum execution time for the linter to prevent long runs.
+
+output:
+  print-issued-lines: true
+  print-linter-name: true
+
+linters-settings:
+  errcheck:
+    check-type-assertions: true # Ensures all type assertions are checked for safety.
+    check-blank: true # Flags ignored error return values (e.g., `_ = someFunc()`).
+    exclude-functions: # List of functions to ignore when checking error handling.
+      - fmt.Println
+      - fmt.Printf
+      - fmt.Fprintf
+      - log.Println
+      - log.Printf
+      - log.Fatalf
+      - os.Exit
+      - (*github.com/DataDog/datadog-go/v5/statsd.Client).Gauge
+      - (*github.com/DataDog/datadog-go/v5/statsd.Client).Count
+
+  gocyclo:
+    min-complexity: 50 # Reports functions with a cyclomatic complexity higher than 15.
+
+  dupl:
+    threshold: 150 # Reports code duplication if more than 150 tokens are duplicated.
+
+  gofmt:
+    simplify: true # Enables `gofmt -s` to simplify code where possible.
+
+  misspell:
+    locale: US # Uses US English spelling to check for typos.
+
+  goconst:
+    min-occurrences: 3 # Identifies duplicate constants appearing at least 3 times.
+
+  staticcheck:
+    checks:
+      - "all" # Enables all static analysis checks.
+      - "-SA5011" # Explicitly include `nil` pointer dereference check.
+
+linters:
+  enable:
+    - govet # Reports potential issues in Go code.
+    - errcheck # Ensures error return values are properly handled.
+    - staticcheck # Performs advanced static analysis.
+    - gofmt # Ensures code is formatted correctly.
+    - gocyclo # Detects overly complex functions.
+    # - dupl # Identifies duplicated code.
+    # - misspell # Flags common spelling mistakes.
+    - goconst # Suggests replacing duplicated literals with constants.
+    - ineffassign # Detects assignments to variables that are never used.
+    - unused # Identifies unused variables, functions, and imports.
+    - unconvert # Detects unnecessary type conversions.
+    - nakedret # Flags functions with naked returns (return without specifying variables).
+    - gosec # Identifies security vulnerabilities in code.
+    # - stylecheck # Enforces Go style conventions.
+    - nilerr # Detects cases where `nil` is returned as an error.
+    - prealloc # Suggests preallocating slices to prevent `nil` slices.
+    - exhaustive # Ensures `switch` statements handle all possible cases.
+    - bodyclose # Ensures `http.Response.Body` is closed.
+    - unparam # Detects unused parameters, reducing potential `nil` risks.
+    - forcetypeassert # Warns about unsafe type assertions that could lead to nil dereferences.
+
+issues:
+  exclude-files:
+    - ".*\\.pb\\.go$" # Excludes generated protobuf files from linting.
+    - ".*\\.gen\\.go$" # Excludes other generated Go files to reduce false positives.
+    - ".*\\_test\\.go$"
+
+  max-same-issues: 5 # Limits the number of times the same issue can be reported.
+  max-issues-per-linter: 50 # Prevents excessive warnings from a single linter.
+  new: true # If enabled, only shows issues in newly changed code (useful for CI workflows).
