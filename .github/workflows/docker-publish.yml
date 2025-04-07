@@ -8,10 +8,6 @@ on:
 
 jobs:
   test-lint-build:
-    permissions:
-      contents: write  # ✅ Required to push tags and create releases
-      packages: write
-
     runs-on: ubuntu-latest
 
     permissions:
